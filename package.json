@@ -3,19 +3,18 @@
   "version": "1.0.1",
   "description": "LibrePass API Client",
   "main": "lib/index.js",
-  "scripts": {
-    "package": "rm -rf lib && tsc"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/LibrePass/npm-client.git"
-  },
   "author": "M3DZIK <me@medzik.dev>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/LibrePass/npm-client/issues"
+    "url": "https://github.com/LibrePass/LibrePass-JavaScript-API/issues"
   },
-  "homepage": "https://github.com/LibrePass/npm-client#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LibrePass/LibrePass-JavaScript-API.git"
+  },
+  "scripts": {
+    "package": "rm -rf lib && tsc"
+  },
   "devDependencies": {
     "typescript": "^5.3.3"
   },
