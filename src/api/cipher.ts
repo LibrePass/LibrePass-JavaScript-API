@@ -43,10 +43,6 @@ export class CipherClient {
             cipher.rePrompt = false;
         }
 
-        if (cipher.version === undefined) {
-            cipher.version = 1;
-        }
-
         return cipher;
     }
 }
@@ -85,7 +81,6 @@ export type SyncResponse = {
  * @property collection unique identifier of the collection the cipher belongs to
  * @property favorite Whether the cipher is marked as favorite
  * @property rePrompt Whether the password should be re-prompted (Only UI-related)
- * @property version version of the cipher (Currently 1)
  * @property created date the cipher was created
  * @property lastModified date the cipher was last modified
  * @see Cipher
@@ -98,7 +93,6 @@ export interface EncryptedCipher {
     collection?: string;
     favorite: boolean;
     rePrompt: boolean;
-    version: number;
     created?: Date;
     lastModified?: Date;
 }
@@ -114,7 +108,6 @@ export interface EncryptedCipher {
  * @property collection collection identifier
  * @property favorite whether the cipher is a favorite cipher
  * @property rePrompt whether the cipher should be re-prompted (Only UI feature)
- * @property version cipher version (Current version is 1)
  * @property created created date
  * @property lastModified last modified date
  */
@@ -128,7 +121,6 @@ export class Cipher {
     collection?: string;
     favorite = false;
     rePrompt = false;
-    version = 1;
     created?: Date;
     lastModified?: Date;
 
@@ -148,7 +140,6 @@ export class Cipher {
         cipher.collection = encryptedCipher.collection;
         cipher.favorite = encryptedCipher.favorite;
         cipher.rePrompt = encryptedCipher.rePrompt;
-        cipher.version = encryptedCipher.version;
         cipher.created = encryptedCipher.created;
         cipher.lastModified = encryptedCipher.lastModified;
 
@@ -183,7 +174,6 @@ export class Cipher {
             collection: this.collection,
             favorite: this.favorite,
             rePrompt: this.rePrompt,
-            version: this.version,
             created: this.created,
             lastModified: this.lastModified,
             protectedData: aes.encryptAesGcm(secretKey, JSON.stringify(this.getCipherData()))
