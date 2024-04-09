@@ -11,32 +11,23 @@ export class CipherClient {
         this.client = new Client(apiToken, apiUrl);
     }
 
-    public async insert(cipher: EncryptedCipher): Promise<InsertResponse> {
-        return this.client.put(API_ENDPOINT, cipher);
-    }
+    public async sync(lastSync: number, updated: EncryptedCipher[], deleted: string[]) {
+        const request: SyncRequest = {
+            lastSyncTimestamp: lastSync,
+            updated,
+            deleted
+        }
 
-    public async update(cipher: EncryptedCipher) {
-        return this.client.patch(`${API_ENDPOINT}/${cipher.id}`, cipher);
-    }
+        const response = await this.client.post<SyncResponse>(`${API_ENDPOINT}/sync`, request);
 
-    public async get(id: string): Promise<EncryptedCipher> {
-        const response = await this.client.get(`${API_ENDPOINT}/${id}`);
-        // fill cipher with default values if they are not set
-        response.forEach(this.fillCipher);
+        const filledCiphers: EncryptedCipher[] = [];
+        for (const cipher of response.ciphers) {
+            filledCiphers.push(this.fillCipher(cipher));
+        }
 
-        return response;
-    }
-
-    public async getAll(): Promise<EncryptedCipher[]> {
-        const response = await this.client.get(API_ENDPOINT);
-        // fill cipher with default values if they are not set
-        response.forEach(this.fillCipher);
+        response.ciphers = filledCiphers;
 
         return response;
-    }
-
-    public async delete(id: string) {
-        return this.client.delete(`${API_ENDPOINT}/${id}`);
     }
 
     private fillCipher(cipher: EncryptedCipher): EncryptedCipher {
@@ -58,6 +49,30 @@ export class CipherClient {
 
         return cipher;
     }
+}
+
+/**
+ * Request for the sync endpoint.
+ *
+ * @param lastSyncTimestamp The unix timestamp (seconds) of the last synchronization.
+ * @param updated The list of new or updated ciphers to save into the server database.
+ * @param deleted The list of identifiers with deleted ciphers to delete it from the server database.
+ */
+type SyncRequest = {
+    lastSyncTimestamp: number;
+    updated: EncryptedCipher[];
+    deleted: string[];
+}
+
+/**
+ * Response from the sync request contains ciphers.
+ *
+ * @property ids The list of all cipher IDs owned by user.
+ * @property ciphers The new or updated ciphers updated in the server database since the last synchronization.
+ */
+export type SyncResponse = {
+    ids: string[];
+    ciphers: EncryptedCipher[];
 }
 
 /**
